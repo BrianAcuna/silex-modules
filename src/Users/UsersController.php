@@ -21,16 +21,32 @@ class UsersController implements ControllerProviderInterface
       // obtiene el nombre de usuario de la sesión
       $user = $app['session']->get('user');
 
+      $us = $app['session']->get('us');
+      if(!isset($us)){
+        $us = array(
+          array(
+
+            'nombre' =>'Brian',
+            'apellido' => 'Acuña',
+            'direccion' => 'cll 64' ,
+            'email' => 'briandc0208@gmail' ,
+            'telefono' => '2236301'
+          )
+        );
+        $app['session']->set('us',$us);
+      }
+
       // ya ingreso un usuario ?
       if ( isset( $user ) && $user != '' ) {
         // muestra la plantilla
         return $app['twig']->render('Users/users.list.html.twig', array(
-          'user' => $user
+          'user' => $user,
+          'us' => $us
         ));
 
       } else {
         // redirige el navegador a "/login"
-        return $app->redirect( $app['url_generator']->generate('login'));
+         return $app->redirect( $app['url_generator']->generate('login'));
       }
 
     // hace un bind
@@ -56,6 +72,24 @@ class UsersController implements ControllerProviderInterface
 
     // hace un bind
     })->bind('users-edit');
+
+    $controller->post('/doagregarproducto', function(Request $request) use($app){
+
+      $us = $app ['session']->get('us');
+      $us[] = array(
+
+        'nombre' => $request->get('nombre'),
+        'apellido' => $request->get('apellido'),
+        'direccion' => $request->get('direccion'),
+        'email' => $request->get('email'),
+        'telefono' => $request->get('telefono')
+
+      );
+      $app['session']->set('us', $us);
+      
+      return $app->redirect( $app['url_generator']->generate( 'users-list' ));
+      
+    })->bind('doagregarproducto');
 
     return $controller;
   }
