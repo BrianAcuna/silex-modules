@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Users;
+namespace App\Facultad;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UsersController implements ControllerProviderInterface
+class FacultadController implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
@@ -22,9 +22,9 @@ class UsersController implements ControllerProviderInterface
       $user = $app['session']->get('user');
 
       // obtiene el listado de usuarios
-      $users = $app['session']->get('users');
-      if (!isset($users)) {
-        $users = array();
+      $use = $app['session']->get('use');
+      if (!isset($use)) {
+        $use = array();
       }
 
       // ya ingreso un usuario ?
@@ -32,7 +32,7 @@ class UsersController implements ControllerProviderInterface
         // muestra la plantilla
         return $app['twig']->render('Users/users.list.html.twig', array(
           'user' => $user,
-          'users' => $users
+          'use' => $use
         ));
 
       } else {
@@ -56,11 +56,11 @@ class UsersController implements ControllerProviderInterface
           'user' => $user,
           'index' => '',
           'user_to_edit' => array(
+              'id' => '',
               'nombre' => '',
-              'apellido' => '',
-              'direccion' => '',
+              'decano' => '',
               'email' => '',
-              'telefono' => ''
+              'sitio' => ''
             )
         ));
 
@@ -79,9 +79,9 @@ class UsersController implements ControllerProviderInterface
       $user = $app['session']->get('user');
 
       // obtiene los usuarios de la sesión
-      $users = $app['session']->get('users');
-      if (!isset($users)) {
-        $users = array();
+      $use = $app['session']->get('use');
+      if (!isset($use)) {
+        $use = array();
       }
 
       // no ha ingresado el usuario (no ha hecho login) ?
@@ -90,7 +90,7 @@ class UsersController implements ControllerProviderInterface
         return $app->redirect( $app['url_generator']->generate('login'));
 
       // no existe un usuario en esa posición ?
-      } else if ( !isset($users[$index])) {
+      } else if ( !isset($use[$index])) {
         // muestra el formulario de nuevo usuario
         return $app->redirect( $app['url_generator']->generate('users-new') );
 
@@ -99,7 +99,7 @@ class UsersController implements ControllerProviderInterface
         return $app['twig']->render('Users/users.edit.html.twig', array(
           'user' => $user,
           'index' => $index,
-          'user_to_edit' => $users[$index]
+          'user_to_edit' => $use[$index]
         ));
 
       }
@@ -110,35 +110,35 @@ class UsersController implements ControllerProviderInterface
     $controller->post('/save', function( Request $request ) use ( $app ){
 
       // obtiene los usuarios de la sesión
-      $users = $app['session']->get('users');
-      if (!isset($users)) {
-        $users = array();
+      $use = $app['session']->get('use');
+      if (!isset($use)) {
+        $use = array();
       }
 
       // index no está incluido en la petición
       $index = $request->get('index');
       if ( !isset($index) || $index == '' ) {
         // agrega el nuevo usuario
-        $users[] = array(
+        $use[] = array(
+          'id' => $request->get('id'),
           'nombre' => $request->get('nombre'),
-          'apellido' => $request->get('apellido'),
-          'direccion' => $request->get('direccion'),
+          'decano' => $request->get('decano'),
           'email' => $request->get('email'),
-          'telefono' => $request->get('telefono')
+          'sitio' => $request->get('sitio')
         );
       } else {
         // modifica el usuario en la posición $index
-        $users[$index] = array(
+        $use[$index] = array(
+          'id' => $request->get('id'),
           'nombre' => $request->get('nombre'),
-          'apellido' => $request->get('apellido'),
-          'direccion' => $request->get('direccion'),
+          'decano' => $request->get('decano'),
           'email' => $request->get('email'),
-          'telefono' => $request->get('telefono')
+          'sitio' => $request->get('sitio')
         );
       }
 
       // actualiza los datos en sesión
-      $app['session']->set('users', $users);
+      $app['session']->set('use', $use);
 
       // muestra la lista de usuarios
       return $app->redirect( $app['url_generator']->generate('users-list') );
@@ -147,15 +147,15 @@ class UsersController implements ControllerProviderInterface
     $controller->get('/delete/{index}', function($index) use ($app) {
 
       // obtiene los usuarios de la sesión
-      $users = $app['session']->get('users');
-      if (!isset($users)) {
-        $users = array();
+      $use = $app['session']->get('use');
+      if (!isset($use)) {
+        $use = array();
       }
 
       // no existe un usuario en esa posición ?
-      if ( isset($users[$index])) {
-        unset ($users[$index]);
-        $app['session']->set('users', $users);
+      if ( isset($use[$index])) {
+        unset ($use[$index]);
+        $app['session']->set('use', $use);
       }
 
       // muestra la lista de usuarios

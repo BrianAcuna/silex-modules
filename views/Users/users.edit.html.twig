@@ -4,33 +4,39 @@
 
 {% block body %}
 
-<form class="form-horizontal" method="post" action="{{ url('doagregarproducto') }}">
+<form class="form-horizontal" method="post" action="{{ url('users-save') }}">
+
+  <input type="hidden" name="index" value="{{ index }}">
+
   <fieldset>
 
     <!-- Titulo -->
-    <legend>Crear o Editar Usuario</legend>
+    <legend>Crear o Editar Facultad</legend>
+
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="textinput">ID</label>
+      <div class="col-md-4">
+        <input type="text" class="form-control input-md"
+            name="id" value="{{ user_to_edit.id }}"
+            placeholder="nombre del usuario" required="">
+      </div>
+    </div>
 
     <div class="form-group">
       <label class="col-md-4 control-label" for="textinput">Nombre</label>
       <div class="col-md-4">
         <input type="text" class="form-control input-md"
-            name="nombre" placeholder="nombre del usuario" required="">
+            name="nombre" value="{{ user_to_edit.nombre }}"
+            placeholder="apellido del usuario" required="">
       </div>
     </div>
 
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">Apellido</label>
+      <label class="col-md-4 control-label" for="textinput">Decano</label>
       <div class="col-md-4">
         <input type="text" class="form-control input-md"
-            name="apellido" placeholder="apellido del usuario" required="">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">Dirección</label>
-      <div class="col-md-4">
-        <input type="text" class="form-control input-md"
-            name="direccion" placeholder="dirección del usuario" required="">
+            name="decano" value="{{ user_to_edit.decano }}"
+            placeholder="dirección del usuario" required="">
       </div>
     </div>
 
@@ -38,15 +44,17 @@
       <label class="col-md-4 control-label" for="textinput">Email</label>
       <div class="col-md-4">
         <input type="text" class="form-control input-md"
-            name="email" placeholder="correo electrónico" required="">
+            name="email" value="{{ user_to_edit.email }}"
+            placeholder="correo electrónico" required="">
       </div>
     </div>
 
     <div class="form-group">
-      <label class="col-md-4 control-label" for="textinput">Teléfono</label>
+      <label class="col-md-4 control-label" for="textinput">Sitio Web</label>
       <div class="col-md-4">
         <input type="text" class="form-control input-md"
-            name="telefono" placeholder="teléfono del usuario" required="">
+            name="sitio" value="{{ user_to_edit.sitio }}"
+            placeholder="teléfono del usuario" required="">
       </div>
     </div>
 
@@ -54,8 +62,10 @@
     <div class="form-group">
       <div class="col-md-8">
         <div class="pull-right">
-          <button class="btn btn-primary">Guardar</button>
-          <button class="btn btn-primary">Cancelar</button>
+          <button class="btn btn-primary" type="submit">Guardar</button>
+          <a href="{{ url('users-list') }}>" >
+            <button class="btn btn-primary">Cancelar</button>
+          </a>
         </div>
       </div>
     </div>
